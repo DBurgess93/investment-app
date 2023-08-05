@@ -70,7 +70,7 @@ const Form = () => {
   )
 }
 
-const Result = () => {
+const Result = (props) => {
   return (
     <table className="result">
       <thead>
@@ -139,7 +139,12 @@ function App() {
       <Form amountChangeHandler={amountChangeHandler} calculateHandler={calculateHandler} />
       {/* Todo: Show below table conditionally (only once result data is available) */}
       {/* Show fallback text if no data is available */}
-      <Result />
+      <Result
+        currentSavings={currentSavings}
+        yearlyContribution={yearlyContribution}
+        expectedReturn={expectedReturn}
+        duration={duration}
+      />
     </div>
   );
 }

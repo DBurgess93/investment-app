@@ -10,15 +10,30 @@ const Header = (props) => {
   )
 }
 
+const initialUserInput = {
+  'current-savings': 10000,
+  'yearly-contribution': 1200,
+  'expected-return': 7,
+  'duration': 10
+}
+
 const Form = () => {
+  const [userInput, setUserInput] = useState(initialUserInput)
   const submitHandler = () => {
     console.log('SUBMIT')
   }
   const resetHandler = () => {
     console.log('RESET')
+    setUserInput(initialUserInput)
   }
   const changeHandler = (input, value) => {
     console.log(input, value)
+    setUserInput((prevInput) => {
+      return {
+        ...prevInput,
+        [input]: value,
+      }
+    })
   }
   return (
     <form className="form" onSubmit={submitHandler}>
@@ -28,6 +43,7 @@ const Form = () => {
           <input
             onChange={(event) =>
               changeHandler('current-savings', event.target.value)}
+              value={userInput['current-savings']}
             type="number"
             id="current-savings"
           />
@@ -36,6 +52,7 @@ const Form = () => {
           <label htmlFor="yearly-contribution">Yearly Savings ($)</label>
           <input onChange={(event) =>
             changeHandler('yearly-contribution', event.target.value)}
+            value={userInput['yearly-contribution']}
             type="number"
             id="yearly-contribution" />
         </p>
@@ -47,6 +64,7 @@ const Form = () => {
           </label>
           <input onChange={(event) =>
             changeHandler('expected-return', event.target.value)}
+            value={userInput['expected-return']}
             type="number"
             id="expected-return" />
         </p>
@@ -54,6 +72,7 @@ const Form = () => {
           <label htmlFor="duration">Investment Duration (years)</label>
           <input onChange={(event) =>
             changeHandler('duration', event.target.value)}
+            value={userInput['duration']}
             type="number"
             id="duration" />
         </p>
@@ -84,7 +103,7 @@ const Result = (props) => {
       </thead>
       <tbody>
         <tr>
-          <td>YEAR NUMBER</td>
+          <td>YEARLY</td>
           <td>TOTAL SAVINGS END OF YEAR</td>
           <td>INTEREST GAINED IN YEAR</td>
           <td>TOTAL INTEREST GAINED</td>
@@ -96,14 +115,8 @@ const Result = (props) => {
 }
 
 function App() {
-  const [currentSavings, setCurrentSavings] = useState('')
-  const [yearlyContribution, setyearlyContribution] = useState('')
-  const [expectedReturn, setExpectedReturn] = useState('')
-  const [duration, setDuration] = useState('')
 
   const amountChangeHandler = (event) => {
-    setCurrentSavings(event.target.value)
-    console.log(currentSavings)
   }
 
   const calculateHandler = (userInput) => {
@@ -112,10 +125,10 @@ function App() {
 
     const yearlyData = []; // per-year results
 
-    setCurrentSavings(+userInput['current-savings']); // feel free to change the shape of this input object!
-    setyearlyContribution(+userInput['yearly-contribution']); // as mentioned: feel free to change the shape...
-    setExpectedReturn(+userInput['expected-return'] / 100);
-    setDuration(+userInput['duration']);
+    let currentSavings = +userInput['current-savings']; // feel free to change the shape of this input object!
+    const yearlyContribution = +userInput['yearly-contribution']; // as mentioned: feel free to change the shape...
+    const expectedReturn = +userInput['expected-return'] / 100;
+    const duration = +userInput['duration'];
 
     // The below code calculates yearly results (total savings, interest etc)
     for (let i = 0; i < duration; i++) {
@@ -139,12 +152,7 @@ function App() {
       <Form amountChangeHandler={amountChangeHandler} calculateHandler={calculateHandler} />
       {/* Todo: Show below table conditionally (only once result data is available) */}
       {/* Show fallback text if no data is available */}
-      <Result
-        currentSavings={currentSavings}
-        yearlyContribution={yearlyContribution}
-        expectedReturn={expectedReturn}
-        duration={duration}
-      />
+      <Result/>
     </div>
   );
 }
